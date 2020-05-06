@@ -5,7 +5,7 @@ setwd("Users/pc/unah/I P 2020/seminario/repositorio-git/encuesta-Seminario/")
 
 survey <- read.csv("survey_cleaned.csv", sep = ",", header = T)
 
-#------------------------------------------------------------------------------------------------------------
+#-----------------------------------columna de practica actualmente---------------------------------------------------
 
 survey$practica_actualmente <- as.factor(survey$practica_actualmente)
 
