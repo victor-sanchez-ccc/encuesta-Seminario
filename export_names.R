@@ -1,5 +1,5 @@
 setwd("/")
-setwd("Users/pc/unah/I P 2020/seminario/encuesta/")
+setwd("Users/pc/unah/I P 2020/seminario/repositorio-git/encuesta-Seminario/")
 
 survey <- read.csv("encuesta_con_respuestas.csv", header = T, sep = ",", encoding = "UTF-8") ##leyendo el doc de la encuesta con sus respuestas
 

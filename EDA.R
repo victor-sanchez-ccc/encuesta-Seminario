@@ -1,5 +1,5 @@
 setwd("/")
-setwd("Users/pc/unah/I P 2020/seminario/encuesta/")
+setwd("Users/pc/unah/I P 2020/seminario/repositorio-git/encuesta-Seminario/")
 
 column_names <- read.csv("column_names_a_tratar.csv", header = T, sep = ";", encoding = "UTF-8") ##archivo csv con las columnas limpiadas
 
