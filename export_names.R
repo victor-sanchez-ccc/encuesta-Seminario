@@ -10,7 +10,3 @@ columnas_a_tratar <- my.names[!(my.names %in% c("Marca.temporal"))] ## variable 
 df <- data.frame(columna.name = columnas_a_tratar) ## se crea un dataframe
 
 write.csv(df, "column_names.csv", row.names = FALSE) #creamos un archivo csv
-
-
-columna.name
-
