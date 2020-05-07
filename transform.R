@@ -15,25 +15,53 @@ prop.table(table(survey$practica_actualmente))*100 #muestra porcentajes de las f
 
 as.data.frame(prop.table(table(survey$practica_actualmente))) # devuelve la info en forma de columna
 
-df_perc <- as.data.frame(prop.table(table(survey$practica_actualmente))*100)#asignamos el resultado de la linea anterior a la variable df
+df_perc_practica_actualmente <- as.data.frame(prop.table(table(survey$practica_actualmente)))#asignamos el resultado de la linea anterior a la variable df
 
 library(dplyr) #carga la ibreria 
 
-df_perc <- df_perc %>% arrange(-Freq) #ordena los datos en orden descendente con el signo (-) y lo deja guardado en df_perc
+df_perc_practica_actualmente <- df_perc_practica_actualmente %>% arrange(-Freq) #ordena los datos en orden descendente con el signo (-) y lo deja guardado en df_perc
 
-boxplot(df_perc$Freq)
+boxplot(df_perc_practica_actualmente$Freq)
 
-hist(df_perc$Freq)
+hist(df_perc_practica_actualmente$Freq)
 
-qqnorm(df_perc$Freq)
+qqnorm(df_perc_practica_actualmente$Freq)
 
-#------------------------------------------------------------------------------------------------------------
+#-------------------------------------------columna de Practica en primera opcion---------------------------------------
+survey$practica_primera_opcion <- as.factor(survey$practica_primera_opcion)
 
-#------------------------------------------------------------------------------------------------------------
+table(survey$practica_primera_opcion)
 
-#------------------------------------------------------------------------------------------------------------
+prop.table(table(survey$practica_primera_opcion))
 
-#------------------------------------------------------------------------------------------------------------
+as.data.frame(prop.table(table(survey$practica_primera_opcion)))
+
+df_perc_primera_opcion <- as.data.frame(prop.table(table(survey$practica_primera_opcion)))
+
+df_perc_primera_opcion <- df_perc_primera_opcion %>% arrange(-Freq)
+
+boxplot(df_perc_primera_opcion$Freq)
+
+hist(df_perc_primera_opcion$Freq)
+#-------------------------------------------columna practica cursando clases--------------------------------------------
+survey$practica_cursando_clases <- as.factor(survey$practica_cursando_clases)
+
+table(survey$practica_cursando_clases)
+
+prop.table(table(survey$practica_cursando_clases))
+
+as.data.frame(prop.table(table(survey$practica_cursando_clases)))
+
+df_perc_cursa_clases <- as.data.frame(prop.table(table(survey$practica_cursando_clases)))
+
+df_perc_cursa_clases <- df_perc_cursa_clases %>% arrange(-Freq)
+
+boxplot(df_perc_cursa_clases$Freq)
+
+hist(df_perc_cursa_clases$Freq)
+#----------------------------------------------columna Rango indice-----------------------------------------------
+
+#----------------------------------------------columna rendimiento academico-------------------------------------
 
 #------------------------------------------------------------------------------------------------------------
 
