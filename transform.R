@@ -32,7 +32,7 @@ survey$practica_primera_opcion <- as.factor(survey$practica_primera_opcion)
 
 table(survey$practica_primera_opcion)
 
-  prop.table(table(survey$practica_primera_opcion))
+prop.table(table(survey$practica_primera_opcion))
 
 as.data.frame(prop.table(table(survey$practica_primera_opcion)))
 
@@ -100,6 +100,32 @@ hist(df_perc_rendimiento_academico$Freq)
 
 qqnorm(df_perc_rendimiento_academico$Freq)
 
-#------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------tratamiento na---------------------------------------------------
+df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("No"), "primera_opcion"] <- "No" #creando una nueva columna primera_opcion donde se habilitan los na que ya existen... 
+            #sin esta conversion los valores vacios de los registros,  no los detecta como na
+df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("Si"), "primera_opcion"] <- "Si"
+
+df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "cursa_clases"] <- "Si"
+df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "cursa_clases"] <- "No"
+
+is.na(df_perc_primera_opcion)
+is.na(df_perc_cursa_clases)
+
+
+df_perc_primera_opcion %>% select(Freq, primera_opcion) #seleccionamos las columnas freq y primera opcion excluyo var1 porque es la misma con primera_opcion agregando los na
+df_perc_cursa_clases %>% select(Freq, cursa_clases)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
