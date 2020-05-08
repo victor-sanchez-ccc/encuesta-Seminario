@@ -32,7 +32,7 @@ survey$practica_primera_opcion <- as.factor(survey$practica_primera_opcion)
 
 table(survey$practica_primera_opcion)
 
-prop.table(table(survey$practica_primera_opcion))
+  prop.table(table(survey$practica_primera_opcion))
 
 as.data.frame(prop.table(table(survey$practica_primera_opcion)))
 
