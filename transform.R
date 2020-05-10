@@ -3,7 +3,7 @@ setwd("Users/pc/unah/I P 2020/seminario/repositorio-git/encuesta-Seminario/")
 
 #install.packages("dplyr") #instalamos la libreria dplyr
 
-survey <- read.csv("survey_cleaned.csv", sep = ",", header = T)
+survey <- read.csv("survey_cleaned.csv", sep = ",", header = T, stringsAsFactors = FALSE)
 
 #-----------------------------------columna de practica actualmente---------------------------------------------------
 
@@ -40,11 +40,23 @@ df_perc_primera_opcion <- as.data.frame(prop.table(table(survey$practica_primera
 
 df_perc_primera_opcion <- df_perc_primera_opcion %>% arrange(-Freq)
 
+
 boxplot(df_perc_primera_opcion$Freq)
-
 hist(df_perc_primera_opcion$Freq)
-
 qqnorm(df_perc_primera_opcion$Freq)
+
+
+df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("Si"), "estado_estudiante"] <- "Si hace practica en su primera opcion"
+df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("No"), "estado_estudiante"] <- "No hace practica en su primera opcion"
+df_perc_primera_opcion[is.na(df_perc_primera_opcion$"estado_estudiante"), "estado_estudiante"]<- "no hace practica"
+
+df_perc_primera_opcion <- df_perc_primera_opcion %>% select(Var1,estado_estudiante)
+
+survey <- left_join(survey,df_perc_primera_opcion,by=c("practica_primera_opcion"="Var1"))
+
+survey <- survey[,!(names(survey) %in% c("practica_primera_opcion"))]
+
+
 #-------------------------------------------columna practica cursando clases--------------------------------------------
 survey$practica_cursando_clases <- as.factor(survey$practica_cursando_clases)
 
@@ -57,6 +69,19 @@ as.data.frame(prop.table(table(survey$practica_cursando_clases)))
 df_perc_cursa_clases <- as.data.frame(prop.table(table(survey$practica_cursando_clases))*100)
 
 df_perc_cursa_clases <- df_perc_cursa_clases %>% arrange(-Freq)
+
+
+df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "clases_durante_practica"] <- "Si cursa clases durante practica"
+df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "clases_durante_practica"] <- "No cursa clases durante practica"
+df_perc_cursa_clases[is.na(df_perc_cursa_clases$"clases_durante_practica"), "clases_durante_practica"]<- "no hace practica"
+
+df_perc_cursa_clases <- df_perc_cursa_clases %>% select(Var1,clases_durante_practica)
+
+survey <- left_join(survey,df_perc_cursa_clases,by=c("practica_cursando_clases"="Var1"))
+
+survey <- survey[,!(names(survey) %in% c("practica_cursando_clases"))]
+
+
 
 boxplot(df_perc_cursa_clases$Freq)
 
@@ -100,22 +125,6 @@ hist(df_perc_rendimiento_academico$Freq)
 
 qqnorm(df_perc_rendimiento_academico$Freq)
 
-#-----------------------------------------------tratamiento na---------------------------------------------------
-#df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("No"), "primera_opcion"] <- "No" #creando una nueva columna primera_opcion donde 
-            #se habilitan los na que ya existen... sin esta conversion los valores vacios de los registros,  no los detecta como na
-#df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("Si"), "primera_opcion"] <- "Si"
-
-#df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "cursa_clases"] <- "Si"
-#df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "cursa_clases"] <- "No"
-
-#is.na(df_perc_primera_opcion)
-#is.na(df_perc_cursa_clases)
-  
-
-#df_perc_primera_opcion %>% select(Freq, primera_opcion) #seleccionamos las columnas freq y primera opcion excluyo var1 
-            #porque es la misma con primera_opcion agregando los na
-#df_perc_cursa_clases %>% select(Freq, cursa_clases)
-
 #--------------------------limpiezas de columanas de un nivel y de 3 niveles-----------------------------------
 survey <- survey[,!(names(survey) %in% c("rubro_trabajo"))] # elimino la columna rubro-trabajo porque le correspone a pablo tratar esa
 
@@ -138,4 +147,70 @@ si_no
 for (col in si_no) {
   survey[ survey[,col] == "" ,col] <- "no practica"
 }
- is.na(survey$practica_primera_opcion)
+ is.na(survey$practica_cursando_clases)
+ survey[ survey$practica_primera_opcion == "" ,"practica_primera_opcion"] <- "no practica"
+ 
+ #-----------------------------------------------tratamiento na---------------------------------------------------
+ summary(survey)
+ na.summay <- c()
+ 
+ for( myname in names(survey)){
+   print(myname)
+   
+   s <- as.data.frame(prop.table(table(is.na(survey[,myname]))))
+   operacion <- s %>% filter(Var1 == TRUE) %>% select(Freq)
+   
+   df_temp <- data.frame( 
+     column.name=c(myname),  
+     na.percentage = ifelse( length(operacion$Freq) == 0, 0, operacion$Freq[1] )
+   )
+   
+   na.summay <- rbind(na.summay,df_temp)
+   
+   
+ }
+ 
+summary(survey$practica_primera_opcion)
+ 
+str(survey$practica_primera_opcion)
+ 
+is.na(survey$practica_primera_opcion)
+ 
+na.summay %>% arrange(-na.percentage) %>% filter(na.percentage > 0)
+ 
+survey[is.na(survey$practica_primera_opcion), "practica_primera_opcion"] <- 0
+
+survey[is.na(survey$practica_primera_opcion), "practica_primera_opcion"] <- "no"
+
+
+survey$practica_primera_opcion
+
+
+for (col in survey$practica_primera_opcion) {
+  if(is.na(col)){
+    survey[survey$practica_primera_opcion %in% is.na(survey$practica_primera_opcion),] <- "no"
+  }
+}
+
+is.na(survey$practica_primera_opcion) 
+
+survey <- as.character(survey$practica_primera_opcion) 
+
+survey <- survey %>% mutate(practica_primera_opcion = replace(practica_primera_opcion, which(is.na(practica_primera_opcion)), "no"))
+
+as.factor(survey)
+
+as.character(survey)
+
+survey$practica_primera_opcion
+
+
+df_p <- as.data.frame(prop.table(table(survey$practica_primera_opcion)))
+df_p <- df_p %>% arrange(-Freq)
+
+df_p[df_p$Var1 %in% c("No"), "categoria"]<- "no"
+df_p[df_p$Var1 %in% c("Si"), "categoria"]<- "si"
+df_p[is.na(df_p$categoria), "categoria"]<- "no practica"
+
+
+
