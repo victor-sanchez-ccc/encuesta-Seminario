@@ -101,32 +101,41 @@ hist(df_perc_rendimiento_academico$Freq)
 qqnorm(df_perc_rendimiento_academico$Freq)
 
 #-----------------------------------------------tratamiento na---------------------------------------------------
-df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("No"), "primera_opcion"] <- "No" #creando una nueva columna primera_opcion donde 
+#df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("No"), "primera_opcion"] <- "No" #creando una nueva columna primera_opcion donde 
             #se habilitan los na que ya existen... sin esta conversion los valores vacios de los registros,  no los detecta como na
-df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("Si"), "primera_opcion"] <- "Si"
+#df_perc_primera_opcion[df_perc_primera_opcion$Var1 %in% c("Si"), "primera_opcion"] <- "Si"
 
-df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "cursa_clases"] <- "Si"
-df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "cursa_clases"] <- "No"
+#df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "cursa_clases"] <- "Si"
+#df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "cursa_clases"] <- "No"
 
-is.na(df_perc_primera_opcion)
-is.na(df_perc_cursa_clases)
+#is.na(df_perc_primera_opcion)
+#is.na(df_perc_cursa_clases)
+  
 
-
-df_perc_primera_opcion %>% select(Freq, primera_opcion) #seleccionamos las columnas freq y primera opcion excluyo var1 
+#df_perc_primera_opcion %>% select(Freq, primera_opcion) #seleccionamos las columnas freq y primera opcion excluyo var1 
             #porque es la misma con primera_opcion agregando los na
-df_perc_cursa_clases %>% select(Freq, cursa_clases)
+#df_perc_cursa_clases %>% select(Freq, cursa_clases)
 
+#--------------------------limpiezas de columanas de un nivel y de 3 niveles-----------------------------------
+survey <- survey[,!(names(survey) %in% c("rubro_trabajo"))] # elimino la columna rubro-trabajo porque le correspone a pablo tratar esa
 
+si_no <- c()
 
+for (myname in names(survey)) {
 
+  validations <- sum(unique(survey[,myname]) %in% c("No", "Si",""))
+  
+  if(validations == 3){
+    si_no <- c(si_no, myname)
+  }
+  
+}
 
+si_no
 
+# el dataframe "si_no" esta cargado con las columnas de si no primera opcion y cursa clases
 
-
-
-
-
-
-
-
-
+for (col in si_no) {
+  survey[ survey[,col] == "" ,col] <- "no practica"
+}
+ is.na(survey$practica_primera_opcion)
