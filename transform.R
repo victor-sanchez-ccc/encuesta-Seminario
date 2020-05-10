@@ -71,6 +71,12 @@ df_perc_cursa_clases <- as.data.frame(prop.table(table(survey$practica_cursando_
 df_perc_cursa_clases <- df_perc_cursa_clases %>% arrange(-Freq)
 
 
+boxplot(df_perc_cursa_clases$Freq)
+hist(df_perc_cursa_clases$Freq)
+qqnorm(df_perc_cursa_clases$Freq)
+
+
+
 df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("Si"), "clases_durante_practica"] <- "Si cursa clases durante practica"
 df_perc_cursa_clases[df_perc_cursa_clases$Var1 %in% c("No"), "clases_durante_practica"] <- "No cursa clases durante practica"
 df_perc_cursa_clases[is.na(df_perc_cursa_clases$"clases_durante_practica"), "clases_durante_practica"]<- "no hace practica"
@@ -82,12 +88,6 @@ survey <- left_join(survey,df_perc_cursa_clases,by=c("practica_cursando_clases"=
 survey <- survey[,!(names(survey) %in% c("practica_cursando_clases"))]
 
 
-
-boxplot(df_perc_cursa_clases$Freq)
-
-hist(df_perc_cursa_clases$Freq)
-
-qqnorm(df_perc_cursa_clases$Freq)
 #----------------------------------------------columna Rango indice-----------------------------------------------
 survey$rango_indice <- as.factor(survey$rango_indice)
 
@@ -126,91 +126,5 @@ hist(df_perc_rendimiento_academico$Freq)
 qqnorm(df_perc_rendimiento_academico$Freq)
 
 #--------------------------limpiezas de columanas de un nivel y de 3 niveles-----------------------------------
-survey <- survey[,!(names(survey) %in% c("rubro_trabajo"))] # elimino la columna rubro-trabajo porque le correspone a pablo tratar esa
-
-si_no <- c()
-
-for (myname in names(survey)) {
-
-  validations <- sum(unique(survey[,myname]) %in% c("No", "Si",""))
-  
-  if(validations == 3){
-    si_no <- c(si_no, myname)
-  }
-  
-}
-
-si_no
-
-# el dataframe "si_no" esta cargado con las columnas de si no primera opcion y cursa clases
-
-for (col in si_no) {
-  survey[ survey[,col] == "" ,col] <- "no practica"
-}
- is.na(survey$practica_cursando_clases)
- survey[ survey$practica_primera_opcion == "" ,"practica_primera_opcion"] <- "no practica"
- 
- #-----------------------------------------------tratamiento na---------------------------------------------------
- summary(survey)
- na.summay <- c()
- 
- for( myname in names(survey)){
-   print(myname)
-   
-   s <- as.data.frame(prop.table(table(is.na(survey[,myname]))))
-   operacion <- s %>% filter(Var1 == TRUE) %>% select(Freq)
-   
-   df_temp <- data.frame( 
-     column.name=c(myname),  
-     na.percentage = ifelse( length(operacion$Freq) == 0, 0, operacion$Freq[1] )
-   )
-   
-   na.summay <- rbind(na.summay,df_temp)
-   
-   
- }
- 
-summary(survey$practica_primera_opcion)
- 
-str(survey$practica_primera_opcion)
- 
-is.na(survey$practica_primera_opcion)
- 
-na.summay %>% arrange(-na.percentage) %>% filter(na.percentage > 0)
- 
-survey[is.na(survey$practica_primera_opcion), "practica_primera_opcion"] <- 0
-
-survey[is.na(survey$practica_primera_opcion), "practica_primera_opcion"] <- "no"
-
-
-survey$practica_primera_opcion
-
-
-for (col in survey$practica_primera_opcion) {
-  if(is.na(col)){
-    survey[survey$practica_primera_opcion %in% is.na(survey$practica_primera_opcion),] <- "no"
-  }
-}
-
-is.na(survey$practica_primera_opcion) 
-
-survey <- as.character(survey$practica_primera_opcion) 
-
-survey <- survey %>% mutate(practica_primera_opcion = replace(practica_primera_opcion, which(is.na(practica_primera_opcion)), "no"))
-
-as.factor(survey)
-
-as.character(survey)
-
-survey$practica_primera_opcion
-
-
-df_p <- as.data.frame(prop.table(table(survey$practica_primera_opcion)))
-df_p <- df_p %>% arrange(-Freq)
-
-df_p[df_p$Var1 %in% c("No"), "categoria"]<- "no"
-df_p[df_p$Var1 %in% c("Si"), "categoria"]<- "si"
-df_p[is.na(df_p$categoria), "categoria"]<- "no practica"
-
 
 
