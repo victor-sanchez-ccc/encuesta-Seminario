@@ -1,5 +1,5 @@
 setwd("/")
-setwd("Users/pc/unah/I P 2020/seminario/repositorio-git/encuesta-Seminario/")
+setwd("Users/Vicktor Sanz/Desktop/Tesis/encuesta-Seminario")
 
 #install.packages("dplyr") #instalamos la libreria dplyr
 
